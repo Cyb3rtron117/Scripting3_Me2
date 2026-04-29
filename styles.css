@@ -1,0 +1,63 @@
+#mainScreen
+{
+    width:70vw;
+    aspect-ratio: 16 / 9; 
+    background-color: black;
+    position: relative;
+
+    left: 0;
+    top: 0;
+}
+
+#divider
+{
+    width: 0px;
+    height: 100%;
+    position: absolute;
+    left: 50%;
+
+    border-left: 2px dashed white;
+    transform: translateX(-50%);
+}
+#game
+{
+    position: absolute;
+    display: flex;
+    justify-content: center; /* Horizontal center */
+    align-items: center;     /* Vertical center */
+    height: 100vh;
+    width: 100vw;
+    left: 0;
+    top: 0;
+}
+
+#pong-ball
+{
+    width: 2%;
+    aspect-ratio: 1 / 1; 
+    border-radius: 50%;
+    background-color: white;
+
+    position: absolute;
+}
+
+#paddle1
+{
+    top: 0;
+    width: 2%;
+    height: 20%;
+    left: 2%;
+    background-color: white;
+
+    position: absolute;
+}
+#paddle2
+{
+    top: 0;
+    width: 2%;
+    height: 20%;
+    right: 2%;
+    background-color: white;
+
+    position: absolute;
+}
