@@ -21,6 +21,29 @@
     font-size: 5cqw;
     margin: 1%;
 }
+#controlsDiv
+{
+    width:100%;
+    height: 10%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+}
+.controls
+{
+    left: 0;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    position: relative;
+    color: white;
+    text-align: center;
+    font-size: 1cqw;
+    margin: 1%;
+}
 
 #mainScreen
 {
@@ -46,6 +69,35 @@
     border-left: 2px dashed white;
     transform: translateX(-50%);
 }
+
+.StartGame
+{
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#StartButton
+{
+    position: absolute;
+    background-color: black;
+    color: white;
+    z-index: 10;
+    width: 25%;
+    height: 30%;
+    text-align: center;
+    font-size: 2cqw;
+}
+.hide
+{
+    display: none;
+}
+
+
 #game
 {
     position: absolute;
