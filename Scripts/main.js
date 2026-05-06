@@ -237,4 +237,4 @@ function Update() //will always be running because of the setTimeout
   setTimeout(Update, updateRate); //calls this function again every few miliseconds
 }
 
-Update();
+Update();// starts the update cycle
