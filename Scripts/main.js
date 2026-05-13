@@ -117,6 +117,10 @@ function Update() //will always be running because of the setTimeout
     paddle1Bottom = mainscreen.clientHeight - paddle1.clientHeight; //get a new position for the paddle each frame
     paddle2Bottom = mainscreen.clientHeight - paddle2.clientHeight;
 
+    //Ball speed
+    ballValues.x += ballValues.speedX;
+    ballValues.y += ballValues.speedY;
+    
     //PADDLES
 
     //Player 1 controls
@@ -145,8 +149,7 @@ function Update() //will always be running because of the setTimeout
 
     //BALL
     
-    ballValues.x += ballValues.speedX;
-    ballValues.y += ballValues.speedY;
+    
 
     if (ballValues.y < 0 || ballValues.y + ballObj.clientHeight > mainscreen.clientHeight) //if ball is higher than the top or lower than  the bottom, flip the speed
     {
@@ -236,5 +239,4 @@ function Update() //will always be running because of the setTimeout
 
   setTimeout(Update, updateRate); //calls this function again every few miliseconds
 }
-ResetBall(); //just resets it
 Update();// starts the update cycle
