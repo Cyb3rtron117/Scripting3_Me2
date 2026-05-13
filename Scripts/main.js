@@ -144,7 +144,7 @@ function Update() //will always be running because of the setTimeout
 
 
     //BALL
-
+    
     ballValues.x += ballValues.speedX;
     ballValues.y += ballValues.speedY;
 
@@ -198,9 +198,9 @@ function Update() //will always be running because of the setTimeout
 
 
     if (ballValues.x < paddle1.clientWidth + paddle1.offsetLeft //left side of ball, right side of paddle
-       && ballValues.x > paddle1.offsetLeft //left side of ball, left side of paddle
-       && ballValues.y > paddle1.offsetTop 
-       && ballValues.y + ballObj.clientHeight < paddle1.offsetTop + paddle1.clientHeight) 
+       && ballValues.x + ballObj.clientWidth > paddle1.offsetLeft //left side of ball, left side of paddle
+       && ballValues.y + ballObj.clientHeight > paddle1.offsetTop 
+       && ballValues.y < paddle1.offsetTop + paddle1.clientHeight) 
     {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
@@ -214,9 +214,9 @@ function Update() //will always be running because of the setTimeout
     and we have to make sure that the right side of the ball (added offset of ball width) is still more than the paddle's left, which stops collisions behind the left paddle*/
 
     if (ballValues.x + ballObj.clientWidth > paddle2.offsetLeft //right side of ball, left side of paddle
-      && ballValues.x + ballObj.clientWidth < paddle2.offsetLeft + paddle2.clientWidth //right side of ball, left side of paddle
-      && ballValues.y > paddle2.offsetTop 
-      && ballValues.y + ballObj.clientHeight < paddle2.offsetTop + paddle2.clientHeight) 
+      && ballValues.x < paddle2.offsetLeft + paddle2.clientWidth //right side of ball, right side of paddle
+      && ballValues.y + ballObj.clientHeight > paddle2.offsetTop 
+      && ballValues.y < paddle2.offsetTop + paddle2.clientHeight) 
     {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
@@ -236,5 +236,4 @@ function Update() //will always be running because of the setTimeout
 
   setTimeout(Update, updateRate); //calls this function again every few miliseconds
 }
-
 Update();// starts the update cycle
