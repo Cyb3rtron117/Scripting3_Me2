@@ -9,11 +9,16 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="styles.css">
+        <link href="https://db.onlinewebfonts.com/c/f3b96908571e6850a3528ca9cf555584?family=Univers+75+Black" rel="stylesheet">
+        <link href="https://db.onlinewebfonts.com/c/63f874d192fb3892d88d5e26f942b5e2?family=DS-Digital" rel="stylesheet">
+        <link href="https://db.onlinewebfonts.com/c/245dfaccc4e40bed366d044b06b44a52?family=Univers+49+Light+Ultra+Condensed" rel="stylesheet">
+        <!-- references in resources doc -->
     </head>
     <body>
         <div id="game">
-            
+            <div id="background1"></div>
             <div id="mainScreen">
+                <div id="background2"></div>
                 <div class="StartGame">
                     <button id="StartButton", onclick="StartGame()">
                         Start Game?
@@ -22,14 +27,15 @@
 
                 <button onclick="clearHighscore()" id="timerbutton">
                     Clear Best Time
+                    
                 </button>
 
                 <div id="timers">
                     <p id="currentTime" class="timer">
-                        Current Time: 1s
+                        Current Time:<span class="digitalText"> 1</span>s
                     </p>
                     <p id="bestTime" class="timer">
-                        Best Time: 1s
+                        Best Time:<span class="digitalText"> 1</span>s
                     </p>
                 </div>
 
@@ -56,9 +62,10 @@
                         ArrowDown down
                     </p>
                 </div>
+                <div id="divider"></div>
 
             </div>
-            <div id="divider"></div>
+            
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="Scripts/main.js"></script>

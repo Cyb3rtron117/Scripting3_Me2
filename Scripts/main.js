@@ -62,14 +62,14 @@ if(longestTime == null)
 {
   longestTime = 0;
 }
-BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`); //makes sure the correct stuff is displayed once the game loads
-CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`); //only displays up to the second decimal
+BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`); //makes sure the correct stuff is displayed once the game loads
+CurrentTimerObj.html(`Current Time:<span class="digitalText"> ${timer.toFixed(2)} s</span>`); //only displays up to the second decimal
 
 function clearHighscore() //for if the person wants to clear it
 {
   longestTime = 0;
   localStorage.setItem("highScore", 0);
-  BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`);
+  BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`);
 }
 
 
@@ -154,11 +154,11 @@ function CheckTimer()
     console.log("checked");
     longestTime = timer;
     localStorage.setItem("highScore", longestTime);
-    BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`);
+    BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`);
     
   }
   timer = 0;
-  CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+  CurrentTimerObj.html(`Current Time:<span class="digitalText"> ${timer.toFixed(2)} s</span>`);
 }
 
 function Update() //will always be running because of the setTimeout
@@ -172,7 +172,7 @@ function Update() //will always be running because of the setTimeout
 
     //Timer updates and is dependant on update rate
     timer += updateRate / 1000;
-    CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+    CurrentTimerObj.html(`Current Time:<span class="digitalText"> ${timer.toFixed(2)} s</span>`);
     
     //Ball speed
     ballValues.x += ballValues.speedX;
@@ -208,10 +208,16 @@ function Update() //will always be running because of the setTimeout
     
     
 
-    if (ballValues.y < 0 || ballValues.y + ballObj.innerHeight() > mainscreen.innerHeight()) //if ball is higher than the top or lower than  the bottom, flip the speed
+    if (ballValues.y < 0 && ballValues.speedY < 0) //if ball is higher than the top and the ball is going up, flip the speed
+    {
+      ballValues.speedY = -ballValues.speedY;       
+    }
+    if (ballValues.y + ballObj.innerHeight() > mainscreen.innerHeight() && ballValues.speedY > 0) //if ball is lower than the bottom and the ball is going down, flip the speed
     {
       ballValues.speedY = -ballValues.speedY;
     }
+    // this is coded so that the ball does not get stuck in an infinitely flipping loop. Yes, it happened
+    
 
     if (ballValues.x + ballObj.innerWidth() > mainscreen.innerWidth()) //ball touched right side
     {
@@ -262,7 +268,7 @@ function Update() //will always be running because of the setTimeout
        && ballValues.y + ballObj.innerHeight() > paddle1.position().top 
        && ballValues.y < paddle1.position().top + paddle1.innerHeight()) 
     {
-      if(ballValues.speedX < 0) //so the ball doesnt hit multiple times
+      if(ballValues.speedX < 0) //so the ball doesnt hit multiple times (this happened)
       {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
@@ -281,7 +287,7 @@ function Update() //will always be running because of the setTimeout
       && ballValues.y + ballObj.innerHeight() > paddle2.position().top 
       && ballValues.y < paddle2.position().top + paddle2.innerHeight()) 
     {
-      if(ballValues.speedX > 0) //so the ball doesnt hit multiple times
+      if(ballValues.speedX > 0) //so the ball doesnt hit multiple times (this happened)
       {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
