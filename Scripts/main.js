@@ -1,47 +1,86 @@
-var ballObj = document.getElementById("pong-ball");
+/*var ballObj = document.getElementById("pong-ball");
 var paddle1 = document.getElementById("paddle1");
 var paddle2 = document.getElementById("paddle2");
 var game = document.getElementById("game");
 var mainscreen = document.getElementById("mainScreen");
+*/
+var ballObj = $(`#pong-ball`);
+var paddle1 = $("#paddle1");
+var paddle2 = $("#paddle2");
+var game = $("#game");
+var mainscreen = $("#mainScreen");
 
+/*
 var player1ScoreObj = document.getElementById("Player1Score");
 var player2ScoreObj = document.getElementById("Player2Score");
 var GameStart = document.getElementsByClassName("StartGame");
 var StartButton = document.getElementById("StartButton");
+*/
+var player1ScoreObj = $("#Player1Score");
+var player2ScoreObj = $("#Player2Score");
+var GameStart = $(".StartGame").eq(0);
+var StartButton = $("#StartButton");
 
 var updateRate = 10;
 //var paddleSpeed = 4;
+/*
 var ballSpeed = mainscreen.clientHeight / 200;
 var paddleSpeed = mainscreen.clientHeight / 150;
 var paddle1StartPos = (mainscreen.clientHeight - paddle1.clientHeight) / 2;
 var paddle2StartPos = (mainscreen.clientHeight - paddle2.clientHeight) / 2;
 var paddle1Bottom = mainscreen.clientHeight - paddle1.clientHeight;
 var paddle2Bottom = mainscreen.clientHeight - paddle2.clientHeight;
-
+*/
+var ballSpeed = mainscreen.innerHeight() / 200;
+var paddleSpeed = mainscreen.innerHeight() / 150;
+var paddle1StartPos = (mainscreen.innerHeight() - paddle1.innerHeight()) / 2;
+var paddle2StartPos = (mainscreen.innerHeight() - paddle2.innerHeight()) / 2;
+var paddle1Bottom = mainscreen.innerHeight() - paddle1.innerHeight();
+var paddle2Bottom = mainscreen.innerHeight() - paddle2.innerHeight();
 var paddle1Pos = paddle1StartPos;
 var paddle2Pos = paddle2StartPos;
 
-paddle1.style.top = paddle1StartPos + "px";
-paddle2.style.top = paddle2StartPos + "px";
+paddle1.css("top", paddle1StartPos + "px");
+paddle2.css("top", paddle2StartPos + "px");
 
-var ballStartPos = { x: (mainscreen.clientWidth - ballObj.clientWidth) / 2, y: (mainscreen.clientHeight - ballObj.clientHeight) / 2,}; // centers the ball
+var ballStartPos = { x: (mainscreen.innerWidth() - ballObj.innerWidth()) / 2, y: (mainscreen.innerHeight() - ballObj.innerHeight()) / 2,}; // centers the ball
 
 var ballValues = {x: ballStartPos.x, y: ballStartPos.y, speedX: ballSpeed, speedY: ballSpeed};
 var canPlay = false; //value for starting and stopping game
 
 var player1score = 0;
-player1ScoreObj.innerText = player1score;
+player1ScoreObj.text(player1score);
 var player2score = 0;
-player2ScoreObj.innerText = player2score;
+player2ScoreObj.text(player2score);
+
+var CurrentTimerObj = $("#currentTime");
+var BestTimerObj = $("#bestTime");
+let longestTime = Number(localStorage.getItem("highScore")); //gets the stored highscore. sets to 0 if there is no value
+let timer = 0;
+
+if(longestTime == null)
+{
+  longestTime = 0;
+}
+BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`); //makes sure the correct stuff is displayed once the game loads
+CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+
+function clearHighscore() //for if the person wants to clear it
+{
+  longestTime = 0;
+  localStorage.setItem("highScore", 0);
+  BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`);
+}
+
 
 const keysPressed = {};
 
-document.addEventListener("keydown", function (pressedkey) {
+$(document).on("keydown", function (pressedkey) {
   keysPressed[pressedkey.key.toLowerCase()] = true;
   
   //adding keys to an array to check if they are pressed later on. Mimics Unity's Input.key.IsPressed basically
 });
-document.addEventListener("keyup", function (pressedkey) {  
+$(document).on("keyup", function (pressedkey) {  
   keysPressed[pressedkey.key.toLowerCase()] = false;
 
   //it converts it to lowercase so there is not a discrepancy between uppercase and lowercase letters when checking keys later, so i dont have to check both cases
@@ -52,8 +91,8 @@ function ResetBall()
 {
   ballValues.x = ballStartPos.x;
   ballValues.y = ballStartPos.y;
-  ballObj.style.left = ballStartPos.x + "px";
-  ballObj.style.top = ballStartPos.y + "px";
+  ballObj.css("left", ballStartPos.x + "px");
+  ballObj.css("top", ballStartPos.y + "px");
   BallLaunch();
   
 }
@@ -97,83 +136,101 @@ function BallLaunch()
 
 function StartGame()
 {
-  GameStart[0].classList.add("hide"); //adds the hide class to the start screen
+  GameStart.hide(); //hides the start screen
   player1score = 0;
-  player1ScoreObj.innerText = player1score;
+  player1ScoreObj.text(player1score);
   player2score = 0;
-  player2ScoreObj.innerText = player2score;
+  player2ScoreObj.text(player2score);
   ResetBall();
   canPlay = true;
+  timer = 0;
+  
 }
 
-
+function CheckTimer()
+{
+  if(timer > longestTime)
+  {
+    console.log("checked");
+    longestTime = timer;
+    localStorage.setItem("highScore", longestTime);
+    BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`);
+    
+  }
+  timer = 0;
+  CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+}
 
 function Update() //will always be running because of the setTimeout
 {
   if (canPlay) 
     {
-    paddleSpeed = mainscreen.clientHeight / 150; //keeps the paddle speed relative to the screen size (i can test different screen sizes at runtime then)
-    ballSpeed = mainscreen.clientHeight / 200; //same for the ball
-    paddle1Bottom = mainscreen.clientHeight - paddle1.clientHeight; //get a new position for the paddle each frame
-    paddle2Bottom = mainscreen.clientHeight - paddle2.clientHeight;
+    paddleSpeed = mainscreen.innerHeight() / 150; //keeps the paddle speed relative to the screen size (i can test different screen sizes at runtime then)
+    ballSpeed = mainscreen.innerHeight() / 200; //same for the ball
+    paddle1Bottom = mainscreen.innerHeight() - paddle1.innerHeight(); //get a new position for the paddle each frame
+    paddle2Bottom = mainscreen.innerHeight() - paddle2.innerHeight();
 
+    //Timer updates and is dependant on update rate
+    timer += updateRate / 1000;
+    CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+    
     //Ball speed
     ballValues.x += ballValues.speedX;
     ballValues.y += ballValues.speedY;
     
     //PADDLES
-
+    
     //Player 1 controls
-    if (keysPressed["w"] && paddle1.offsetTop > 0) // w
+    if (keysPressed["w"] && paddle1Pos > 0) // w
     {
       paddle1Pos -= paddleSpeed;
     } 
-    else if (keysPressed["s"] && paddle1.offsetTop < paddle1Bottom) // s
+    else if (keysPressed["s"] && paddle1Pos < paddle1Bottom) // s
     {
       paddle1Pos += paddleSpeed;
     }
 
     //Player 2 controls
-    if (keysPressed["arrowup"] && paddle2.offsetTop > 0) // up arrow
+    if (keysPressed["arrowup"] && paddle2Pos > 0) // up arrow
     {
       paddle2Pos -= paddleSpeed;
     } 
-    else if (keysPressed["arrowdown"] && paddle2.offsetTop < paddle2Bottom) // down arrow
+    else if (keysPressed["arrowdown"] && paddle2Pos < paddle2Bottom) // down arrow
     {
       paddle2Pos += paddleSpeed;
     }
 
-    paddle1.style.top = paddle1Pos + "px"; //moves the paddles
-    paddle2.style.top = paddle2Pos + "px";
+    paddle1.css("top", paddle1Pos + "px"); //moves the paddles
+    paddle2.css("top", paddle2Pos + "px");
 
 
     //BALL
     
     
 
-    if (ballValues.y < 0 || ballValues.y + ballObj.clientHeight > mainscreen.clientHeight) //if ball is higher than the top or lower than  the bottom, flip the speed
+    if (ballValues.y < 0 || ballValues.y + ballObj.innerHeight() > mainscreen.innerHeight()) //if ball is higher than the top or lower than  the bottom, flip the speed
     {
       ballValues.speedY = -ballValues.speedY;
     }
 
-    if (ballValues.x + ballObj.clientWidth > mainscreen.clientWidth) //ball touched right side
+    if (ballValues.x + ballObj.innerWidth() > mainscreen.innerWidth()) //ball touched right side
     {
       //ballValues.speedX = -ballValues.speedX;
       player1score += 1;
-      player1ScoreObj.innerText = player1score;
-      
+      player1ScoreObj.text(player1score);
+      CheckTimer();
       if(player1score < 5)
       {
         setTimeout(ResetBall, 1000); //resets the ball after 1 second
       }
       else
       {
-        GameStart[0].classList.remove("hide");
-        StartButton.innerText = 
-        `Player 1 has won!
-        
+        GameStart.show();
+        StartButton.html(
+        `Player 1 has won!<br>
+        <br>
         Play new Game?
-        `
+        `)
       }
       canPlay = false;
     }
@@ -181,62 +238,68 @@ function Update() //will always be running because of the setTimeout
     {
       //ballValues.speedX = -ballValues.speedX;
       player2score += 1;
-      player2ScoreObj.innerText = player2score;
-
+      player2ScoreObj.text(player2score);
+      CheckTimer();
       if(player2score < 5)
       {
         setTimeout(ResetBall, 1000); //resets the ball after 1 second
       }
       else
       {
-        GameStart[0].classList.remove("hide");
-        StartButton.innerText = 
-        `Player 2 has won!
-
+        GameStart.show();
+        StartButton.html(
+        `Player 2 has won!<br>
+        <br>
         Play new Game?
-        `
+        `)
       }
       canPlay = false;
     }
 
 
-    if (ballValues.x < paddle1.clientWidth + paddle1.offsetLeft //left side of ball, right side of paddle
-       && ballValues.x + ballObj.clientWidth > paddle1.offsetLeft //left side of ball, left side of paddle
-       && ballValues.y + ballObj.clientHeight > paddle1.offsetTop 
-       && ballValues.y < paddle1.offsetTop + paddle1.clientHeight) 
+    if (ballValues.x < paddle1.innerWidth() + paddle1.position().left //left side of ball, right side of paddle
+       && ballValues.x + ballObj.innerWidth() > paddle1.position().left //left side of ball, left side of paddle
+       && ballValues.y + ballObj.innerHeight() > paddle1.position().top 
+       && ballValues.y < paddle1.position().top + paddle1.innerHeight()) 
     {
+      if(ballValues.speedX < 0) //so the ball doesnt hit multiple times
+      {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
 
 
-      var YDirection = ((ballValues.y + (ballObj.clientHeight / 2)) - (paddle1.offsetTop + (paddle1.clientHeight / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
+      var YDirection = ((ballValues.y + (ballObj.innerHeight() / 2)) - (paddle1.position().top + (paddle1.innerHeight() / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
       ballValues.speedY = YDirection * 0.05; //this gives the ball a different angle depending on where it hit
+      }
     }
     /*if the ball is further left than the right of the paddle, and further right than the left of the paddle, and it is within the paddle's top and bottom, flip the speed. Basically if it is inside left paddle it will fire
     we check ifthe left side of the ball is touching the right side of the paddle, which means due to the paddle's anchor being on the left, that distance is offset by the paddle's width (to get the right side)
     and we have to make sure that the right side of the ball (added offset of ball width) is still more than the paddle's left, which stops collisions behind the left paddle*/
 
-    if (ballValues.x + ballObj.clientWidth > paddle2.offsetLeft //right side of ball, left side of paddle
-      && ballValues.x < paddle2.offsetLeft + paddle2.clientWidth //right side of ball, right side of paddle
-      && ballValues.y + ballObj.clientHeight > paddle2.offsetTop 
-      && ballValues.y < paddle2.offsetTop + paddle2.clientHeight) 
+    if (ballValues.x + ballObj.innerWidth() > paddle2.position().left //right side of ball, left side of paddle
+      && ballValues.x < paddle2.position().left + paddle2.innerWidth() //right side of ball, right side of paddle
+      && ballValues.y + ballObj.innerHeight() > paddle2.position().top 
+      && ballValues.y < paddle2.position().top + paddle2.innerHeight()) 
     {
+      if(ballValues.speedX > 0) //so the ball doesnt hit multiple times
+      {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
 
 
-      var YDirection = ((ballValues.y + (ballObj.clientHeight / 2)) - (paddle2.offsetTop + (paddle2.clientHeight / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
+      var YDirection = ((ballValues.y + (ballObj.innerHeight() / 2)) - (paddle2.position().top + (paddle2.innerHeight() / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
       ballValues.speedY = YDirection * 0.05; //this gives the ball a different angle depending on where it hit
+      }
     }
     /*if the ball is further right than the left of the paddle, and further left than the right of the paddle, and it is within the paddle's top and bottom, flip the speed. Basically if it is inside the right paddle it will fire
     since ball anchor is top left, have to shift the check to the right by the ball's width to check if the right side of the ball is touching the left side of the paddle
     we also have to make sure that the left of the ball is still further left than the right side of the paddle. This prevents collisions behind the right paddle*/
 
-    ballObj.style.left = ballValues.x + "px"; //moves the ball
-    ballObj.style.top = ballValues.y + "px";
+    ballObj.css("left", ballValues.x + "px"); //moves the ball
+    ballObj.css("top", ballValues.y + "px");
   }
-
-
   setTimeout(Update, updateRate); //calls this function again every few miliseconds
 }
 Update();// starts the update cycle
+
+

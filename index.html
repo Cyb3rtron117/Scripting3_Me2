@@ -20,6 +20,19 @@
                     </button>
                 </div>
 
+                <button onclick="clearHighscore()" id="timerbutton">
+                    Clear Best Time
+                </button>
+
+                <div id="timers">
+                    <p id="currentTime" class="timer">
+                        Current Time: 1s
+                    </p>
+                    <p id="bestTime" class="timer">
+                        Best Time: 1s
+                    </p>
+                </div>
+
                 <div id="scoreboard">
                     <p id="Player1Score" class="score">
                         1
@@ -28,7 +41,7 @@
                         1
                     </p>
                 </div>
-
+                
                 <div id = "paddle1"></div>
                 <div id = "paddle2"></div>
                 <div id = "pong-ball"></div>
@@ -47,6 +60,8 @@
             </div>
             <div id="divider"></div>
         </div>
-        <script src="Scripts/main.js" async defer></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="Scripts/main.js"></script>
+        
     </body>
 </html>
