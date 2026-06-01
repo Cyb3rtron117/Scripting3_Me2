@@ -4,6 +4,7 @@ var paddle2 = document.getElementById("paddle2");
 var game = document.getElementById("game");
 var mainscreen = document.getElementById("mainScreen");
 */
+var websiteEnter = $("#website_enter");
 var ballObj = $(`#pong-ball`);
 var paddle1 = $("#paddle1");
 var paddle2 = $("#paddle2");
@@ -20,6 +21,7 @@ var player1ScoreObj = $("#Player1Score");
 var player2ScoreObj = $("#Player2Score");
 var GameStart = $(".StartGame").eq(0);
 var StartButton = $("#StartButton");
+var TimerButton = $("#timerbutton");
 
 var updateRate = 10;
 //var paddleSpeed = 4;
@@ -47,11 +49,32 @@ var ballStartPos = { x: (mainscreen.innerWidth() - ballObj.innerWidth()) / 2, y:
 
 var ballValues = {x: ballStartPos.x, y: ballStartPos.y, speedX: ballSpeed, speedY: ballSpeed};
 var canPlay = false; //value for starting and stopping game
+var hasWon = false; //value for determening whether music can swap
 
 var player1score = 0;
 player1ScoreObj.text(player1score);
 var player2score = 0;
 player2ScoreObj.text(player2score);
+
+//SOUNDS
+const light_flicker = new Audio("Sounds/light_flicker_20.wav");
+const emancipation = new Audio("Sounds/material_emancipation_01.wav");
+const Button_timer = new Audio("Sounds/menu_accept.wav");
+const Button_start = new Audio("Sounds/menu_back.wav");
+const music_chill = new Audio("Sounds/mp_coop_lobby_2_c2.wav");
+const music_action = new Audio("Sounds/mp_coop_lobby_2_c7.wav");
+const hit_1 = new Audio("Sounds/physics_cube_sm_19.wav");
+const hit_2 = new Audio("Sounds/physics_cube_sm_20.wav");
+const paddle_blue = new Audio("Sounds/portalgun_shoot_blue1.wav");
+const paddle_orange = new Audio("Sounds/portalgun_shoot_red1.wav");
+
+var Sounds = [light_flicker, emancipation, Button_timer, Button_start, music_chill, music_action, hit_1, hit_2, paddle_blue, paddle_orange];
+Sounds.forEach(sound => {
+  sound.volume = 0.05;
+});
+emancipation.volume = 0.01; //this one is very loud
+Button_start.volume = 0.1;
+Button_timer.volume = 0.1;
 
 var CurrentTimerObj = $("#currentTime");
 var BestTimerObj = $("#bestTime");
@@ -65,16 +88,20 @@ if(longestTime == null)
 BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`); //makes sure the correct stuff is displayed once the game loads
 CurrentTimerObj.html(`Current Time:<span class="digitalText"> ${timer.toFixed(2)} s</span>`); //only displays up to the second decimal
 
+
 function clearHighscore() //for if the person wants to clear it
 {
   longestTime = 0;
   localStorage.setItem("highScore", 0);
   BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`);
+  Button_timer.play();
 }
+
 
 function flashOrange()
 {
   var count = 0;
+  light_flicker.play();
   const interval = setInterval(() => {
     count++;
     switch(count)
@@ -100,6 +127,7 @@ function flashOrange()
 function flashBlue()
 {
   var count = 0;
+  light_flicker.play();
   const interval = setInterval(() => {
     count++;
     switch(count)
@@ -193,7 +221,8 @@ function StartGame()
   ResetBall();
   canPlay = true;
   timer = 0;
-  
+  hasWon = false;
+  Button_start.play();
 }
 
 function CheckTimer()
@@ -214,6 +243,16 @@ function Update() //will always be running because of the setTimeout
 {
   if (canPlay) 
     {
+      if(!music_chill.paused || !music_chill.ended) //pauses the chill music to play the action music
+      {
+      music_chill.pause();
+      }
+      if(music_action.paused || music_action.ended)
+      {
+        music_action.play();
+      }
+      
+
     paddleSpeed = mainscreen.innerHeight() / 150; //keeps the paddle speed relative to the screen size (i can test different screen sizes at runtime then)
     ballSpeed = mainscreen.innerHeight() / 200; //same for the ball
     paddle1Bottom = mainscreen.innerHeight() - paddle1.innerHeight(); //get a new position for the paddle each frame
@@ -227,7 +266,7 @@ function Update() //will always be running because of the setTimeout
     ballValues.x += ballValues.speedX;
     ballValues.y += ballValues.speedY;
     
-    
+
     //PADDLES
     
     //Player 1 controls
@@ -258,17 +297,21 @@ function Update() //will always be running because of the setTimeout
     
     if (ballValues.y < 0 && ballValues.speedY < 0) //if ball is higher than the top and the ball is going up, flip the speed
     {
-      ballValues.speedY = -ballValues.speedY;       
+      ballValues.speedY = -ballValues.speedY;  
+      hit_1.play();     
     }
     if (ballValues.y + ballObj.innerHeight() > mainscreen.innerHeight() && ballValues.speedY > 0) //if ball is lower than the bottom and the ball is going down, flip the speed
     {
       ballValues.speedY = -ballValues.speedY;
+      hit_2.play();
     }
     // this is coded so that the ball does not get stuck in an infinitely flipping loop. Yes, it happened
     
 
     if (ballValues.x + ballObj.innerWidth() > mainscreen.innerWidth()) //ball touched right side
     {
+      emancipation.currentTime = 0; //resets the sound
+      emancipation.play();
       //ballValues.speedX = -ballValues.speedX;
       player1score += 1;
       player1ScoreObj.text(player1score);
@@ -286,11 +329,15 @@ function Update() //will always be running because of the setTimeout
         <br>
         Play new Game?
         `)
+        hasWon = true;
       }
       canPlay = false;
     }
     if (ballValues.x < 0) //ball touched left side
     {
+      emancipation.currentTime = 0; //resets the sound
+      emancipation.play();
+
       //ballValues.speedX = -ballValues.speedX;
       player2score += 1;
       player2ScoreObj.text(player2score);
@@ -308,6 +355,7 @@ function Update() //will always be running because of the setTimeout
         <br>
         Play new Game?
         `)
+        hasWon = true;
       }
       canPlay = false;
     }
@@ -323,7 +371,8 @@ function Update() //will always be running because of the setTimeout
       {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
-
+      paddle_blue.play();
+      hit_1.play();
 
       var YDirection = ((ballValues.y + (ballObj.innerHeight() / 2)) - (paddle1.position().top + (paddle1.innerHeight() / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
       ballValues.speedY = YDirection * 0.05; //this gives the ball a different angle depending on where it hit
@@ -342,7 +391,8 @@ function Update() //will always be running because of the setTimeout
       {
       ballValues.speedX = -ballValues.speedX;
       ballValues.speedX *= 1.05;
-
+      paddle_orange.play();
+      hit_2.play();
 
       var YDirection = ((ballValues.y + (ballObj.innerHeight() / 2)) - (paddle2.position().top + (paddle2.innerHeight() / 2))) //center of ball position minus centre of paddle position gives the offset of the ball from the paddle center
       ballValues.speedY = YDirection * 0.05; //this gives the ball a different angle depending on where it hit
@@ -352,11 +402,35 @@ function Update() //will always be running because of the setTimeout
     since ball anchor is top left, have to shift the check to the right by the ball's width to check if the right side of the ball is touching the left side of the paddle
     we also have to make sure that the left of the ball is still further left than the right side of the paddle. This prevents collisions behind the right paddle*/
 
+    if(ballValues.x + ballObj.innerWidth() > TimerButton.position().left && ballValues.y < TimerButton.position().top + TimerButton.innerHeight()) //make button transparent if ball is too close (so you can see)
+    {
+      TimerButton.css("opacity", 0.5);
+    }
+    else
+    {
+      TimerButton.css("opacity", 1);
+    }
+
     ballObj.css("left", ballValues.x + "px"); //moves the ball
     ballObj.css("top", ballValues.y + "px");
+  }
+
+  if(hasWon)
+  {
+    if(!music_action.paused || !music_action.ended)
+    {
+      music_action.pause();
+    }
+    if((music_chill.paused || music_chill.ended) && music_chill.readyState > 1)
+    {
+      music_chill.play();
+    }
   }
   setTimeout(Update, updateRate); //calls this function again every few miliseconds
 }
 Update();// starts the update cycle
 
-
+websiteEnter.click(function(){
+  hasWon = true;
+  websiteEnter.hide();
+})

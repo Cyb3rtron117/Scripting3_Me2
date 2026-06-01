@@ -251,3 +251,16 @@
     rotate: -22deg;
     opacity: 0.2;
 }
+
+#website_enter
+{
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 999999;
+    text-align: center;
+    font-family: "Univers 75 Black";
+    background-color: rgba(40, 40, 40, 0.215);
+}
