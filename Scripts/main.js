@@ -63,7 +63,7 @@ if(longestTime == null)
   longestTime = 0;
 }
 BestTimerObj.text(`Best Time: ${longestTime.toFixed(2)}s`); //makes sure the correct stuff is displayed once the game loads
-CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`);
+CurrentTimerObj.text(`Current Time: ${timer.toFixed(2)}s`); //only displays up to the second decimal
 
 function clearHighscore() //for if the person wants to clear it
 {
