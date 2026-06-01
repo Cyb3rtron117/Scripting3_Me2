@@ -179,9 +179,13 @@
     width: 2%;
     aspect-ratio: 1 / 1; 
     border-radius: 50%;
-    background-color: white;
+    
 
     position: absolute;
+    background-color: white;
+    background-image: url(Images/Aperture_Science_Logo.svg.png);
+    background-position: center center;
+    background-size: 100%;
 }
 
 #paddle1
@@ -231,4 +235,15 @@
     width: 100%;
     height: 100%;
     z-index: 0;
+}
+
+#ApertureLogo
+{
+    position: absolute;
+    top: 30%;
+    left: 18%;
+    width: 60%;
+    z-index: 0;
+    rotate: -22deg;
+    opacity: 0.2;
 }
