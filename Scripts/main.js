@@ -402,7 +402,7 @@ function Update() //will always be running because of the setTimeout
     since ball anchor is top left, have to shift the check to the right by the ball's width to check if the right side of the ball is touching the left side of the paddle
     we also have to make sure that the left of the ball is still further left than the right side of the paddle. This prevents collisions behind the right paddle*/
 
-    if(ballValues.x + ballObj.innerWidth() > TimerButton.position().left && ballValues.y < TimerButton.position().top + TimerButton.innerHeight()) //make button transparent if ball is too close (so you can see)
+    if((ballValues.x + ballObj.innerWidth() > TimerButton.position().left && ballValues.y < TimerButton.position().top + TimerButton.innerHeight()) || paddle2Pos < TimerButton.position().top + TimerButton.innerHeight()) //make button transparent if ball or paddle are too close (so you can see)
     {
       TimerButton.css("opacity", 0.5);
     }
