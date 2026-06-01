@@ -9,7 +9,7 @@ var paddle1 = $("#paddle1");
 var paddle2 = $("#paddle2");
 var game = $("#game");
 var mainscreen = $("#mainScreen");
-
+var divider = $("#divider");
 /*
 var player1ScoreObj = document.getElementById("Player1Score");
 var player2ScoreObj = document.getElementById("Player2Score");
@@ -72,6 +72,55 @@ function clearHighscore() //for if the person wants to clear it
   BestTimerObj.html(`Best Time:<span class="digitalText"> ${longestTime.toFixed(2)} s</span>`);
 }
 
+function flashOrange()
+{
+  var count = 0;
+  const interval = setInterval(() => {
+    count++;
+    switch(count)
+    {
+      case 1:      
+        divider.css("background-image", "url(Images/Circle2.png)");
+        break;
+      case 2:      
+        divider.css("background-image", "url(Images/Circle1.png)");
+        break;
+      case 3:      
+        divider.css("background-image", "url(Images/Circle2.png)");
+        break;
+      case 4:      
+        divider.css("background-image", "url(Images/Circle1.png)");
+        clearInterval(interval);
+        break;
+      
+    }
+  }, 250);
+}
+
+function flashBlue()
+{
+  var count = 0;
+  const interval = setInterval(() => {
+    count++;
+    switch(count)
+    {
+      case 1:      
+        divider.css("background-image", "url(Images/Circle3.png)");
+        break;
+      case 2:      
+        divider.css("background-image", "url(Images/Circle1.png)");
+        break;
+      case 3:      
+        divider.css("background-image", "url(Images/Circle3.png)");
+        break;
+      case 4:      
+        divider.css("background-image", "url(Images/Circle1.png)");
+        clearInterval(interval);
+        break;
+      
+    }
+  }, 250);
+}
 
 const keysPressed = {};
 
@@ -178,6 +227,7 @@ function Update() //will always be running because of the setTimeout
     ballValues.x += ballValues.speedX;
     ballValues.y += ballValues.speedY;
     
+    
     //PADDLES
     
     //Player 1 controls
@@ -206,8 +256,6 @@ function Update() //will always be running because of the setTimeout
 
     //BALL
     
-    
-
     if (ballValues.y < 0 && ballValues.speedY < 0) //if ball is higher than the top and the ball is going up, flip the speed
     {
       ballValues.speedY = -ballValues.speedY;       
@@ -225,6 +273,7 @@ function Update() //will always be running because of the setTimeout
       player1score += 1;
       player1ScoreObj.text(player1score);
       CheckTimer();
+      flashBlue();
       if(player1score < 5)
       {
         setTimeout(ResetBall, 1000); //resets the ball after 1 second
@@ -246,6 +295,7 @@ function Update() //will always be running because of the setTimeout
       player2score += 1;
       player2ScoreObj.text(player2score);
       CheckTimer();
+      flashOrange();
       if(player2score < 5)
       {
         setTimeout(ResetBall, 1000); //resets the ball after 1 second
@@ -262,6 +312,7 @@ function Update() //will always be running because of the setTimeout
       canPlay = false;
     }
 
+    //PADDLE COLLISIONS
 
     if (ballValues.x < paddle1.innerWidth() + paddle1.position().left //left side of ball, right side of paddle
        && ballValues.x + ballObj.innerWidth() > paddle1.position().left //left side of ball, left side of paddle

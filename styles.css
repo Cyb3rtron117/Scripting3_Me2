@@ -113,14 +113,18 @@
 
 #divider
 {
-    width: 0px;
+    width: 2%;
     height: 100%;
     position: absolute;
     left: 50%;
     top: 0;
 
-    border-left: 0.25vw dashed white;
+    /*border-left: 0.25vw dashed white;*/
     transform: translateX(-50%);
+    background-image: url(Images/Circle1.png);
+    background-position: center center;
+    background-size: 1vw;
+    background-repeat: repeat-y;
 }
 
 .StartGame
@@ -241,7 +245,7 @@
 {
     position: absolute;
     top: 30%;
-    left: 18%;
+    left: 20%;
     width: 60%;
     z-index: 0;
     rotate: -22deg;
